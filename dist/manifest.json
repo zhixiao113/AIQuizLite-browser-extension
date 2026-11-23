@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "AIQuizLite 题库助手",
+  "version": "0.5.7",
+  "description": "在浏览器侧边栏与模型对话，将已采集的题目整理为 AIQuizLite JSON 题库。",
+  "minimum_chrome_version": "116",
+  "permissions": ["activeTab", "scripting", "sidePanel", "storage", "downloads"],
+  "optional_host_permissions": ["https://*/*", "http://localhost/*", "http://127.0.0.1/*"],
+  "host_permissions": ["https://exam.zhiqiantong.cn/*", "https://www.zhiqiantong.cn/*", "https://static.zhiqiantong.cn/*", "https://image.zhiqiantong.cn/*"],
+  "action": { "default_title": "打开 AIQuizLite 题库助手" },
+  "commands": { "_execute_action": { "suggested_key": { "default": "Alt+Shift+Q" } } },
+  "background": { "service_worker": "background.js", "type": "module" },
+  "side_panel": { "default_path": "sidepanel.html" },
+  "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'" }
+}

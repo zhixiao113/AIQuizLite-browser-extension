@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AIQuizLite 题库助手</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="panel.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">Q</span><div><strong>AIQuizLite</strong><span class="brand-caption">浏览器题库助手</span></div></div>
+    <button id="new-draft" class="text-button" type="button">新对话</button>
+  </header>
+  <div class="model-bar"><span class="status-dot" id="model-dot" aria-hidden="true"></span><label for="active-profile" class="sr-only">对话与题库整理模型</label><select id="active-profile"><option value="">尚未配置模型</option></select><button type="button" id="open-settings" class="text-button">配置</button></div>
+  <nav class="tabs" aria-label="工作区"><button type="button" data-view="chat">对话</button><button type="button" data-view="settings">设置</button></nav>
+  <div id="notice" class="notice" role="status" hidden></div>
+  <div id="version-warning" class="notice version-warning" role="status" hidden><p id="version-warning-text"></p><button id="reload-extension" class="secondary" type="button" hidden>重新加载扩展</button></div>
+  <div id="capture-help" class="notice" role="status" hidden><p id="capture-help-text"></p><div class="settings-actions"><button id="focus-quiz-tab" class="secondary" type="button">切回原题库</button><button id="capture-shortcuts" class="text-button" type="button">快捷键设置</button></div></div>
+  <div id="task-status" class="task-status" role="status" hidden><span id="task-label"></span><button type="button" id="cancel-task" class="text-button">停止</button></div>
+  <main>
+    <section id="view-chat" class="view" aria-label="模型对话">
+      <div class="section-heading"><h1>把网页题库，带到手机里</h1><p>打开题库后，一次点击开始采集、整理和校验。</p></div>
+      <div class="prompt-actions"><button id="chat-bank" type="button" class="primary">导出整份题库</button><button class="text-button" id="open-bank-folder" type="button" aria-label="打开题库下载文件夹">打开题库文件</button></div>
+      <label class="context-toggle"><input type="checkbox" id="chat-context"> 对话附带最近采集的题目原文</label>
+      <div id="messages" class="messages" aria-live="polite"></div>
+      <section id="export-progress" class="export-progress" aria-label="题库导出进度" aria-live="polite" hidden><div class="section-title"><strong id="export-stage">正在识别题库</strong><span id="export-count" class="quiet"></span></div><progress id="export-bar" max="100"></progress><p id="export-detail"></p><button id="resume-export" class="secondary" type="button" hidden>继续导出</button><button id="download-diagnostics" class="text-button" type="button" hidden>下载采集诊断</button></section>
+      <section id="document-list" class="document-list" aria-label="题库文档"></section>
+      <form id="chat-form" class="composer"><label for="chat-input" class="sr-only">对话内容</label><textarea id="chat-input" rows="3" maxlength="6000" placeholder="输入问题，或说“把这份题库导出来”…"></textarea><div class="composer-footer"><span>Enter 发送 · Shift + Enter 换行</span><button type="submit" class="primary" id="send-chat">发送</button></div></form>
+      <button type="button" id="clear-chat" class="text-button clear-chat">清空本地对话</button>
+    </section>
+    <section id="view-document" class="view" aria-label="题库文档查看" hidden>
+      <button type="button" id="close-document" class="text-button">← 返回对话</button>
+      <div class="section-heading"><h1 id="document-heading">题库文档</h1><p id="document-source"></p></div>
+      <div id="coverage-warning" class="review-item" hidden><p id="coverage-detail"></p><label class="context-toggle"><input id="accept-partial" type="checkbox"> 我确认仅导出已采集的部分题目</label></div>
+      <section class="bank-section" aria-labelledby="bank-heading">
+        <div class="section-title"><h2 id="bank-heading">题目与标准答案</h2></div>
+        <label for="bank-name">题库名称</label><input id="bank-name" type="text" maxlength="120" value="网页题库">
+        <div id="bank-summary" class="bank-summary">整理后的题目会显示在这里。</div>
+        <div class="review-actions"><button id="ai-reviews" class="primary" type="button" hidden>交给 AI 处理待核对项</button><button id="deep-reviews" class="secondary" type="button" hidden>深度核对</button></div>
+        <p id="review-result" class="quiet" role="status" hidden></p>
+        <button id="download-review-diagnostics" class="text-button" type="button" hidden>下载核对诊断</button>
+        <div id="review-items"></div>
+        <div id="question-list" class="question-list"></div>
+        <div id="question-pagination" class="pagination" hidden><button type="button" id="previous-questions" class="secondary">上一页</button><span id="question-page-label" class="quiet"></span><button type="button" id="next-questions" class="secondary">下一页</button></div>
+        <div id="bank-empty" class="empty-state"><strong>还没有完整题目</strong><p>已采集的缺失内容会保留为待核对项。</p></div>
+        <details class="json-editor"><summary>编辑整份题库 JSON</summary><label for="import-json" class="file-button">导入 JSON 文件</label><input type="file" id="import-json" accept=".json,application/json" class="sr-only"><label for="json-input" class="sr-only">题库 JSON</label><textarea id="json-input" rows="12" spellcheck="false" placeholder="粘贴符合 APP 格式的题库 JSON"></textarea><button type="button" id="apply-json" class="secondary">应用 JSON 并校验</button></details>
+        <div class="export-row"><button type="button" id="resume-generation" class="secondary" hidden>继续未完成整理</button><button type="button" id="download-bank" class="primary" disabled>下载题库文件</button><span id="export-hint" class="quiet">导入手机 APP 后即可刷题</span></div>
+      </section>
+    </section>
+    <section id="view-settings" class="view" aria-label="设置选项" hidden>
+      <div class="section-heading"><h1>设置</h1><p>管理模型和题库下载位置。</p></div>
+      <div class="settings-list">
+        <button id="settings-model" class="settings-row" type="button"><span><strong>模型配置</strong><span>添加和管理模型 API</span></span><span aria-hidden="true" class="row-arrow">›</span></button>
+        <button id="settings-download" class="settings-row" type="button"><span><strong>下载文件路径</strong><span id="download-folder-summary">浏览器下载目录 / AIQuizLite</span></span><span aria-hidden="true" class="row-arrow">›</span></button>
+      </div>
+    </section>
+    <section id="view-profile-settings" class="view" aria-label="模型配置" hidden>
+      <button id="back-model-settings" class="text-button settings-back" type="button">← 返回设置</button>
+      <div class="section-heading"><h1>模型配置</h1><p>支持 OpenAI 兼容的 Chat Completions 接口。</p></div>
+      <div class="section-title"><h2>模型配置</h2><button type="button" id="add-profile" class="text-button">新增配置</button></div>
+      <label for="profile-selector">选择配置</label><select id="profile-selector"><option value="">新配置</option></select>
+      <form id="profile-form" class="settings-form">
+        <label for="profile-name">配置名称</label><input id="profile-name" required maxlength="80" placeholder="例如：日常学习">
+        <label for="profile-url">API Base URL</label><input id="profile-url" type="url" required placeholder="https://api.example.com/v1" autocomplete="off"><p class="field-hint">填写到 /v1 或完整 /chat/completions 路径。本机模型服务可使用 localhost。</p>
+        <label for="profile-model">模型 ID</label><input id="profile-model" required maxlength="120" placeholder="填写服务商提供的模型名称" autocomplete="off">
+        <label class="remember-option"><input type="checkbox" id="profile-vision"> 此模型支持图片识别</label><p class="field-hint">用于深度核对。需服务商支持 image_url 图片输入，勾选不会改变模型本身的能力。</p>
+        <label class="remember-option"><input type="checkbox" id="profile-ocr-only"> 仅用于图片文字识别（OCR 专用）</label><p class="field-hint">OCR 识别结果会交给顶部的题库整理模型生成 JSON，保存此配置不会切换顶部模型。</p>
+        <label for="profile-key">API Key</label><input id="profile-key" type="password" placeholder="输入密钥；编辑时留空保留" autocomplete="off" spellcheck="false"><span id="key-state" class="field-hint">尚未保存密钥。</span>
+        <label class="remember-option"><input type="checkbox" id="remember-key"> 在本机记住密钥</label><p class="field-hint">默认只保存到浏览器会话。勾选后存于扩展本地存储，不进入题库、日志或云同步，可随时清除。</p>
+        <div class="settings-actions"><button type="submit" class="primary">保存配置</button><button type="button" id="test-profile" class="secondary">保存并测试连接</button></div>
+      </form>
+      <div class="settings-management"><button type="button" id="clear-key" class="text-button">清除这个配置的密钥</button><button type="button" id="delete-profile" class="text-button danger">删除配置</button></div>
+      <label for="vision-profile">深度核对图片模型</label><select id="vision-profile"><option value="">使用当前模型（需支持图片）</option></select><p class="field-hint">可单独选择已配置的图片模型，普通对话继续使用顶部模型。</p>
+    </section>
+    <section id="view-download-settings" class="view" aria-label="下载文件路径" hidden>
+      <button id="back-download-settings" class="text-button settings-back" type="button">← 返回设置</button>
+      <div class="section-heading"><h1>下载文件路径</h1><p>题库会直接保存到这里，同名文件自动另存。</p></div>
+      <form id="download-settings-form" class="settings-form">
+        <label for="download-folder">题库文件夹</label><input id="download-folder" type="text" maxlength="180" placeholder="例如：AIQuizLite 或 题库/网络工程" autocomplete="off" aria-describedby="download-folder-hint">
+        <p id="download-folder-hint" class="field-hint">位于浏览器下载目录下，可用 / 分隔多级文件夹。留空则保存到下载目录。</p>
+        <div class="download-location"><span class="quiet">保存位置</span><strong id="download-location-preview">浏览器下载目录 / AIQuizLite</strong><span id="last-download-location" class="quiet" hidden></span></div>
+        <div class="settings-actions"><button class="primary" type="submit" id="save-download-folder">保存路径</button><button id="open-download-folder" class="secondary" type="button">打开文件夹</button></div>
+      </form>
+      <button id="browser-download-settings" class="text-button" type="button">更改浏览器下载目录</button>
+    </section>
+  </main>
+  <dialog id="export-setup"><form id="export-setup-form"><h2>这份题库共有多少题？</h2><p class="quiet">填写总题数，用于检查题号和最终成品，不能用模型补造缺失的原题。</p><label for="expected-total">总题数</label><input id="expected-total" type="number" min="1" max="5000" step="1" required placeholder="例如：100"><div class="settings-actions"><button type="button" id="cancel-export-setup" class="secondary">取消</button><button type="submit" class="primary">开始导出</button></div></form></dialog>
+  <footer class="app-footer"><span id="save-status">文档保存在本机</span><span id="extension-version"></span></footer>
+</body>
+</html>

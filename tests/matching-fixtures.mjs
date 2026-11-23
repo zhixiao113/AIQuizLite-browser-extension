@@ -1,0 +1,12 @@
+// Transcribed from the user's visible source. Q93 is a structural fixture:
+// the screenshot did not show its full lists or answer, so do not claim its
+// unseen content was independently recovered.
+export const matchingSources = [
+  { number: 89, rawText: '89\n（连线题）路由属性是对路由的特定描述，所有的BGP路由属性都可以分为4类。请将以下BGP常见属性和对应的类型进行匹配。（Token可重复使用）\n1. 公认必须遵循\n2. 公认任意\n3. 可选过渡\n4. 可选非过渡\n1. Origin属性\n2. 团体属性\n3. Next_Hop属性\n4. Local_Pref属性\n5. Originator_ID属性\n6. Cluster_List属性\n正确答案是：\n[ 1-1,1-3,2-4,3-2,4-5,4-6 ];\n连线图形请查看解析\n我要纠错\n批注\n张老师\n更改连线题答案\n解析\n下一题\n上一题' },
+  { number: 93, fixtureOnly: true, rawText: '93\n（连线题）在OPSF网络中，两台路由器邻居关系建立完成后，会交互DD报文，该报文中包含多个字段，请将以下字段与其表达的含义进行匹配。\n1. MS-bit-1\n2. I-bit-1\n3. DD Sea\n1. 主设备\n2. 初始报文\n3. 序列号\n正确答案是：\n[1-1,2-2,3-3];\n连线图形请查看解析\n解析\n下一题' },
+  { number: 96, rawText: '96\n（连线题）在OSPF网络中，OSPF根据链路层协议类型，将网络分为了四种类型。缺省情况下，请将以下链路层协议与对应的网络类型进行匹配。（Token可重复使用）\n1. Broadcast\n2. P2P\n3. P2MP\n4. NBMA\n1. 帧中继\n2. Ethernet\n3. PPP\n4. HDLC\n正确答案是：\n[ 1-2,2-3,2-4,4-1 ];\n连线图形请查看解析\n我要纠错\n批注\n张老师\n确认系统答案 无误\n解析\n教材内原图：\n下一题\n上一题' },
+  { number: 99, rawText: '99\n（连线题）某AR路由器配置了2条IP前缀列表，请将该路由器收到的路由与其能够匹配上（被permit）的IP前缀列表进行一一对应。（Token可重复使用）\n1. ip ip-prefix List 1 index 10 permit 1.1.1.0 24\ngreater-equal 24 less-equal 27\n2. ip ip-prefix List 2 index 10 permit 0.0.0.0 27 less-\nequal 32\n1. 1.1.1.1/32\n2. 1.1.1.0/30\n3. 1.1.1.0/28\n4. 1.1.1.0/26\n5. 1.1.1.0/24\n正确答案是：\n[ 1-4,1-5,2-1,2-2,2-3 ];\n连线图形请查看解析\n我要纠错\n批注\n张老师\n确认系统答案 无误\n解析\n下一题\n上一题' },
+  { number: 100, rawText: '100\n（连线题）如图所示为某厂模型网络，已知R1、R2、R3、R4和R5开启了OSPF路由协议，且Area2被配置为NSSA区域。现工程师在R5上引入了去往通用服务器的路由，那么请将以下LSA类型和各路由器所存在的LSA类型相匹配。\n1. 1类LSA、2类LSA、3类LSA\n2. 1类LSA、2类LSA、3类LSA、5类LSA\n3. 1类LSA、2类LSA、3类LSA、4类LSA、5类LSA\n4. 1类LSA、2类LSA、3类LSA、4类LSA、7类LSA\n5. 1类LSA、2类LSA、3类LSA、5类LSA、7类LSA\n1. R1\n2. R4\n3. R5\n正确答案是：\n[ 2-1,3-2,4-3 ];\n连线图形请查看解析\n批注\n张老师\n更改连线题答案\n解析\nR1：1、2类存在；R2和R3作为ABR会向区域0泛洪3类lsa。\nR4：1、2类存在；R2作为ABR会向区域1泛洪3类lsa。\nR5：1、2类存在；R5本身作为ASBR，引入了外部路由。\n下一题\n上一题' },
+  { number: 101, rawText: '101\n（连线题）在WLAN网络中，工程师可以通过VLAN Pool将接入的用户分配到不同的VLAN，从而减少广播域，提升网络性能。其中，VLAN Pool提供顺序分配和HASH分配两种分配方式，请将以下两种分配方式与其优缺点相对应。（Token可重复使用）\n1. 顺序分配方式\n2. HASH分配方式\n1. 各个VLAN用户数目划分不均衡\n2. 各个VLAN用户数目划分均匀\n3. 用户多次上线可分配相同的VLAN和IP地址\n4. 用户重新上线后VLAN和IP地址有可能变更\n正确答案是：\n[ 1-2,1-4,2-1,2-3 ];\n连线图形请查看解析\n我要纠错\n批注\n张老师\n确认系统答案 无误\n解析\n下一题\n上一题' }
+].map(source => ({ ...source, identity: `number_${source.number}` }));
+

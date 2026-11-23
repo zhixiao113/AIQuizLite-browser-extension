@@ -1,0 +1,12 @@
+import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+const root = fileURLToPath(new URL('../', import.meta.url));
+const source = path.join(root, 'extension');
+const output = path.join(root, 'dist');
+await mkdir(output, { recursive: true });
+await cp(source, output, { recursive: true });
+const manifest = JSON.parse(await readFile(path.join(output, 'manifest.json'), 'utf8'));
+for (const file of [manifest.background.service_worker, manifest.side_panel.default_path, 'panel.js', 'styles.css']) await readFile(path.join(output, file));
+await writeFile(path.join(output, 'BUILD.txt'), `AIQuizLite ${manifest.version}\nBuilt ${new Date().toISOString()}\n`);
+console.log(`可加载插件已构建：${output}`);
